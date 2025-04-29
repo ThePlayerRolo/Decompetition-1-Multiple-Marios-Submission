@@ -11,7 +11,7 @@
 
 #include "make_const_nonconst.h"
 
-#include "levels/example/header.h"
+#include "levels/MY_LEVEL/header.h"
 
 
-#include "levels/example/geo.inc.c"
+#include "levels/MY_LEVEL/geo.inc.c"

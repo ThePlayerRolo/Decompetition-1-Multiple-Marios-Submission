@@ -118,18 +118,12 @@ void coop_npc_behavior(struct MarioState * m) {
     m->input |= INPUT_NONZERO_ANALOG; // Allows him to move
 
     m->intendedMag = 32.0f; // Always holding
-
-    if (gGlobalTimer % 15 == 0) {
-        m->intendedYaw = random_u16(); // Random direction every half second
-    }
+    m->input |= (INPUT_A_DOWN|INPUT_A_PRESSED);
+    m->intendedYaw = random_u16(); 
     if (random_u16()%20==0) {
-        m->input |= (INPUT_A_DOWN|INPUT_A_PRESSED); // 1/20 chance every frame to press A
-    }
-    if (random_u16()%50==0) {
-        m->input |= (INPUT_B_DOWN|INPUT_B_PRESSED); // 1/50 chance every frame to press B
-    }
-    if (random_u16()%100==0) {
-        m->input |= (INPUT_Z_DOWN|INPUT_Z_PRESSED); // 1/100 chance every frame to press Z
+        m->input |= (INPUT_Z_DOWN|INPUT_Z_PRESSED);
+        m->intendedYaw = random_u16();
+        m->input |= (INPUT_B_DOWN|INPUT_B_PRESSED); 
     }
 }
 
