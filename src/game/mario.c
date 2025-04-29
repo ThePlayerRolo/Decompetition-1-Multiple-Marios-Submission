@@ -1347,6 +1347,9 @@ void update_mario_inputs(struct MarioState *m) {
     if ((m->controlMode == COOP_CM_NPC) && gMarioState != m) {
         coop_npc_behavior(m);
     }
+    if ((m->controlMode == COOP_CM_NPC_DEATH) && gMarioState != m) {
+        coop_npc_behavior(m);
+    }
 
     update_mario_geometry_inputs(m);
 #ifdef VANILLA_DEBUG
