@@ -156,7 +156,11 @@ void coop_mario_collision(struct MarioState * m) {
                     set_mario_action(m,ACT_GROUND_BONK, 0);
                 }
                 break;
-        
+                case COOP_CM_NPC_DEATH:
+                if (gMarioStates[i].action == ACT_JUMP_KICK) {
+                    set_mario_action(m,ACT_DEATH_ON_BACK, 0);
+                }
+                break;
                 case COOP_CM_TAKE_TURNS:
                 case COOP_CM_ALL_ACTIVE:
 
