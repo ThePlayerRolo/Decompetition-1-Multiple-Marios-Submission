@@ -148,26 +148,25 @@ void coop_mario_collision(struct MarioState * m) {
         Vec3f diff;
         vec3_diff(diff, gMarioStates[i].pos, m->pos);
         f32 distSquared = sqr(diff[0]) + sqr(diff[1]) + sqr(diff[2]);
-
-
-        switch (m->controlMode) {
-        case COOP_CM_NPC:
-            m->marioObj->oInteractStatus |= INT_STATUS_MARIO_KNOCKBACK_DMG;
-            break;
-        
-        case COOP_CM_TAKE_TURNS:
-        case COOP_CM_ALL_ACTIVE:
         if (distSquared < sqr(COOP_MARIO_HITBOX_SIZE)) {
-            f32 pressure = sqrtf(sqr(COOP_MARIO_HITBOX_SIZE)-distSquared)/4.f;
+            switch (gMarioStates[i].controlMode) {
+                default:
+                 m->action |= ACT_SOFT_BONK;
+                break;
+        
+            /** case COOP_CM_TAKE_TURNS:
+                case COOP_CM_ALL_ACTIVE:
+                    f32 pressure = sqrtf(sqr(COOP_MARIO_HITBOX_SIZE)-distSquared)/4.f;
 
-            vec3f_normalize(diff);
-            vec3_scale_dest(diff,diff,-pressure);
+                    vec3f_normalize(diff);
+                    vec3_scale_dest(diff,diff,-pressure);
 
-            vec3f_sum(m->pos,m->pos,diff);
-            vec3_scale_dest(diff,diff,-1.0f);
-            vec3f_sum(gMarioStates[i].pos,gMarioStates[i].pos,diff);
-        }
-            break;
-        }
+                    vec3f_sum(m->pos,m->pos,diff);
+                    vec3_scale_dest(diff,diff,-1.0f);
+                    vec3f_sum(gMarioStates[i].pos,gMarioStates[i].pos,diff);
+                    }
+                    break; **/
+        } 
+        }   
     }
 }
