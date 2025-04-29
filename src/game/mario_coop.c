@@ -152,7 +152,9 @@ void coop_mario_collision(struct MarioState * m) {
         if (distSquared < sqr(COOP_MARIO_HITBOX_SIZE)) {
             switch (gMarioStates[i].controlMode) {
                 case COOP_CM_NPC:
-                 m->action |= ACT_SOFT_BONK;
+                if (gMarioStates[i].action == ACT_JUMP_KICK) {
+                    set_mario_action(m,ACT_GROUND_BONK, 0);
+                }
                 break;
         
                 case COOP_CM_TAKE_TURNS:
