@@ -117,7 +117,6 @@ void coop_npc_behavior(struct MarioState * m) {
     // Sample NPC function that makes Mario jump around like an idiot.
 
     m->input |= INPUT_NONZERO_ANALOG; // Allows him to move
-
     m->intendedMag = 32.0f; // Always holding
     m->input |= (INPUT_A_DOWN|INPUT_A_PRESSED);
     m->intendedYaw = random_u16(); 

@@ -1,0 +1,1 @@
+m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[<model id>];
