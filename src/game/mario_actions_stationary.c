@@ -1020,7 +1020,12 @@ s32 act_ground_pound_land(struct MarioState *m) {
     if (m->input & INPUT_ABOVE_SLIDE) {
         return set_mario_action(m, ACT_BUTT_SLIDE, 0);
     }
-
+    if (m->input & INPUT_A_PRESSED) {
+        //play_sound(SOUND_MARIO_YAHOO_WAHA_YIPPEE + ((gAudioRandom % 5) << 16), m->marioObj->header.gfx.cameraToObject);
+        m->vel[1] = 30.0f;
+        m->faceAngle[1] = m->intendedYaw;
+        return set_mario_action(m, ACT_TRIPLE_JUMP, 0);
+    }
     landing_step(m, MARIO_ANIM_GROUND_POUND_LANDING, ACT_BUTT_SLIDE_STOP);
     return FALSE;
 }

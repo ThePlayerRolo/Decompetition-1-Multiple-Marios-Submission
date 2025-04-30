@@ -1,3 +1,4 @@
+#include <PR/ultratypes.h>
 #include "types.h"
 #include "mario_coop.h"
 #include "level_update.h"
@@ -10,6 +11,12 @@
 #include "game_init.h"
 #include "camera.h"
 #include "interaction.h"
+#include "sm64.h"
+#include "area.h"
+#include "audio/external.h"
+#include "engine/graph_node.h"
+#include "mario_step.h"
+
 /*
 
 mario_coop.c
@@ -118,13 +125,14 @@ void coop_npc_behavior(struct MarioState * m) {
 
     m->input |= INPUT_NONZERO_ANALOG; // Allows him to move
     m->intendedMag = 32.0f; // Always holding
-    m->input |= (INPUT_A_DOWN|INPUT_A_PRESSED);
-    m->intendedYaw = random_u16(); 
-    if (random_u16()%20==0) {
+    //m->input |= (INPUT_A_DOWN|INPUT_A_PRESSED);
+    m->intendedYaw = obj_angle_to_object(m->marioObj,gMarioObject);
+    m->faceAngle[1] = m->intendedYaw; 
+   /*if (random_u16()%70==0) {
         m->input |= (INPUT_Z_DOWN|INPUT_Z_PRESSED);
         m->intendedYaw = random_u16();
         m->input |= (INPUT_B_DOWN|INPUT_B_PRESSED); 
-    }
+    } */ 
 }
 
 // Don't call this function yourself, used for level transitions
@@ -148,16 +156,26 @@ void coop_mario_collision(struct MarioState * m) {
         vec3_diff(diff, gMarioStates[i].pos, m->pos);
         f32 distSquared = sqr(diff[0]) + sqr(diff[1]) + sqr(diff[2]);
         f32 pressure = sqrtf(sqr(COOP_MARIO_HITBOX_SIZE)-distSquared)/4.f;
+
         if (distSquared < sqr(COOP_MARIO_HITBOX_SIZE)) {
             switch (gMarioStates[i].controlMode) {
                 case COOP_CM_NPC:
-                if (gMarioStates[i].action == ACT_JUMP_KICK) {
-                    set_mario_action(m,ACT_GROUND_BONK, 0);
-                }
-                break;
-                case COOP_CM_NPC_DEATH:
-                if (gMarioStates[i].action == ACT_JUMP_KICK) {
-                    set_mario_action(m,ACT_DEATH_ON_BACK, 0);
+                if (m->controlMode != COOP_CM_NPC) {
+                    if (gMarioStates[i].action != ACT_GROUND_BONK && !set_mario_wall(&gMarioStates[i], NULL)) {
+                        //set_mario_action(m,ACT_GROUND_BONK, 0);
+                        set_mario_action(m,ACT_BACKWARD_GROUND_KB, 0);
+                    }
+
+                    /**if (gMarioStates[i].action == ACT_JUMP_KICK) {
+                        set_mario_action(m,ACT_GROUND_BONK, 0);
+                    } */
+                } else {
+                    vec3f_normalize(diff);
+                    vec3_scale_dest(diff,diff,-pressure);
+
+                    vec3f_sum(m->pos,m->pos,diff);
+                    vec3_scale_dest(diff,diff,-1.0f);
+                    vec3f_sum(gMarioStates[i].pos,gMarioStates[i].pos,diff);
                 }
                 break;
                 case COOP_CM_TAKE_TURNS:
