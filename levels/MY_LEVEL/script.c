@@ -29,6 +29,7 @@ const LevelScript level_MY_LEVEL_entry[] = {
 	AREA(1, MY_LEVEL_area_1),
 		MARIO_POS(0x01, 0, 0, 80, 0),
 		OBJECT(MODEL_NONE, 1190, 80, 0, 0, 0, 0, (COOP_CM_TAKE_TURNS << 16), bhvSpawnCoopMario),
+		OBJECT(MODEL_NONE, 1190, 80, 5528, 0, 0, 0, (COOP_CM_NPC << 16), bhvSpawnCoopMario),
 		TERRAIN(MY_LEVEL_area_1_collision),
 		MACRO_OBJECTS(MY_LEVEL_area_1_macro_objs),
 		SET_BACKGROUND_MUSIC(0x00, SEQ_LEVEL_GRASS),

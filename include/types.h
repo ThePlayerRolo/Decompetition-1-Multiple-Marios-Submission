@@ -461,6 +461,9 @@ struct MarioState {
              s16 wallYaw;
              u8 controlMode;
     // -- HackerSM64 MarioState fields end --
+    // -- ThePlayerRolo MarioState fields begin --
+            u8 B_ButtonTimer;
+    // -- ThePlayerRolo MarioState fields end --
 };
 
 #endif // TYPES_H
