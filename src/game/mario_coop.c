@@ -135,10 +135,12 @@ void coop_npc_behavior(struct MarioState * m) {
     m->faceAngle[1] = m->intendedYaw; 
     if (distSquared < sqr(1000.0f) && distSquared > sqr(300.0f)) {
         m->B_ButtonTimer++;
-        m->input |= (INPUT_B_DOWN|INPUT_B_PRESSED);
-        if (m->B_ButtonTimer >= 20) {
-            m->faceAngle[1] = m->intendedYaw; 
-            m->input |= (INPUT_B_DOWN|INPUT_B_PRESSED);
+        m->input |= (INPUT_Z_DOWN|INPUT_Z_PRESSED);
+        //m->input |= (INPUT_B_DOWN|INPUT_B_PRESSED);
+        if (m->B_ButtonTimer >= 10) {
+            //m->faceAngle[1] = m->intendedYaw; 
+            //m->input |= (INPUT_B_DOWN|INPUT_B_PRESSED);
+            m->input |= (INPUT_A_DOWN|INPUT_A_PRESSED);
             m->B_ButtonTimer = 0;
         } 
     }
@@ -175,9 +177,9 @@ void coop_mario_collision(struct MarioState * m) {
             switch (gMarioStates[i].controlMode) {
                 case COOP_CM_NPC:
                 if (m->controlMode != COOP_CM_NPC) {
-                    if (gMarioStates[i].action != ACT_GROUND_BONK && gMarioStates[i].wall == NULL) {
+                    if (gMarioStates[i].action != ACT_DEATH_ON_BACK && gMarioStates[i].wall == NULL){
                         //set_mario_action(m,ACT_GROUND_BONK, 0);
-                        set_mario_action(m,ACT_BACKWARD_GROUND_KB, 0);
+                        set_mario_action(m,ACT_DEATH_ON_BACK, 0);
                     }
 
                     /**if (gMarioStates[i].action == ACT_JUMP_KICK) {

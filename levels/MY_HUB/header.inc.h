@@ -1,0 +1,10 @@
+extern const GeoLayout MY_HUB_area_1_geo[];
+extern const GeoLayout MY_HUB_area_1[];
+extern const Collision MY_HUB_area_1_collision[];
+extern const MacroObject MY_HUB_area_1_macro_objs[];
+extern Vtx MY_HUB_dl_Level_Mesh_mesh_layer_1_vtx_cull[8];
+extern Vtx MY_HUB_dl_Level_Mesh_mesh_layer_1_vtx_0[28];
+extern Gfx MY_HUB_dl_Level_Mesh_mesh_layer_1_tri_0[];
+extern Gfx mat_MY_HUB_dl_Grass_Example[];
+extern Gfx mat_revert_MY_HUB_dl_Grass_Example[];
+extern Gfx MY_HUB_dl_Level_Mesh_mesh_layer_1[];
