@@ -1345,6 +1345,7 @@ void update_mario_inputs(struct MarioState *m) {
     }
 
     if ((m->controlMode == COOP_CM_NPC) && gMarioState != m) {
+        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_LUIGI];
         coop_npc_behavior(m);
     }
     if ((m->controlMode == COOP_CM_NPC_DEATH) && gMarioState != m) {

@@ -124,8 +124,7 @@ int coop_delete_mario(struct MarioState * m) {
 void coop_npc_behavior(struct MarioState * m) {
     // Sample NPC function that makes Mario jump around like an idiot.
     //sprintf()
-    print_text_fmt_int(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(91), 185, "%d", m->B_ButtonTimer);
-    m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_LUIGI];
+    print_text_fmt_int(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(91), 185, "%d",gMarioState->wall != NULL);
     Vec3f diff;
     vec3_diff(diff, gMarioState->pos, m->pos);
     f32 distSquared = sqr(diff[0]) + sqr(diff[1]) + sqr(diff[2]);
@@ -176,7 +175,7 @@ void coop_mario_collision(struct MarioState * m) {
             switch (gMarioStates[i].controlMode) {
                 case COOP_CM_NPC:
                 if (m->controlMode != COOP_CM_NPC) {
-                    if (gMarioStates[i].action != ACT_GROUND_BONK) {
+                    if (gMarioStates[i].action != ACT_GROUND_BONK && gMarioStates[i].wall == NULL) {
                         //set_mario_action(m,ACT_GROUND_BONK, 0);
                         set_mario_action(m,ACT_BACKWARD_GROUND_KB, 0);
                     }
