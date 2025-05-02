@@ -3,7 +3,7 @@
 const GeoLayout MY_HUB_area_1_geo[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
-		GEO_DISPLAY_LIST(LAYER_OPAQUE, MY_HUB_dl_Level_Mesh_mesh_layer_1),
+		GEO_TRANSLATE_ROTATE_WITH_DL(LAYER_OPAQUE, 0, 996, 0, -180, 0, 0, MY_HUB_dl_Level_Mesh_mesh_layer_1),
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };

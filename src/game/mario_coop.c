@@ -120,35 +120,37 @@ int coop_delete_mario(struct MarioState * m) {
 
     return TRUE;
 }
+void coop_npc_action_function(struct MarioState * m, u16 button_one, u16 button_two, u8 timer_amount) {
+    m->B_ButtonTimer++;
+    m->input |= button_one;
+    if (m->B_ButtonTimer >= timer_amount && m->forwardVel >= 10) {
+        m->input |= button_two;
+        m->B_ButtonTimer = 0;
+    } 
+
+
+}
+
+
 
 void coop_npc_behavior(struct MarioState * m) {
     // Sample NPC function that makes Mario jump around like an idiot.
-    //sprintf()
-    print_text_fmt_int(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(91), 185, "%d",gMarioState->wall != NULL);
     Vec3f diff;
     vec3_diff(diff, gMarioState->pos, m->pos);
     f32 distSquared = sqr(diff[0]) + sqr(diff[1]) + sqr(diff[2]);
+    print_text_fmt_int(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(91), 185, "%d", distSquared);
     m->input |= INPUT_NONZERO_ANALOG; // Allows him to move
-    m->intendedMag = 32.0f; // Always holding
-    //m->input |= (INPUT_A_DOWN|INPUT_A_PRESSED);
+    // Always holding
     m->intendedYaw = obj_angle_to_object(m->marioObj,gMarioObject);
-    m->faceAngle[1] = m->intendedYaw; 
-    if (distSquared < sqr(1000.0f) && distSquared > sqr(300.0f)) {
-        m->B_ButtonTimer++;
-        m->input |= (INPUT_Z_DOWN|INPUT_Z_PRESSED);
-        //m->input |= (INPUT_B_DOWN|INPUT_B_PRESSED);
-        if (m->B_ButtonTimer >= 10) {
-            //m->faceAngle[1] = m->intendedYaw; 
-            //m->input |= (INPUT_B_DOWN|INPUT_B_PRESSED);
-            m->input |= (INPUT_A_DOWN|INPUT_A_PRESSED);
-            m->B_ButtonTimer = 0;
-        } 
+    //m->faceAngle[1] = m->intendedYaw; 
+    if (distSquared < sqr(3000.0f) && distSquared > sqr(600.0f)) {
+        m->intendedMag = 16.0f; 
+        m->faceAngle[1] = m->intendedYaw; 
+        coop_npc_action_function(m, (INPUT_Z_DOWN|INPUT_Z_PRESSED), (INPUT_A_DOWN|INPUT_A_PRESSED), 10);
+    } else {
+        m->intendedMag = 32.0f; 
+        m->faceAngle[1] = m->intendedYaw; 
     }
-   /*if (random_u16()%70==0) {
-        m->input |= (INPUT_Z_DOWN|INPUT_Z_PRESSED);
-        m->intendedYaw = random_u16();
-        m->input |= (INPUT_B_DOWN|INPUT_B_PRESSED); 
-    } */ 
 }
 
 // Don't call this function yourself, used for level transitions
