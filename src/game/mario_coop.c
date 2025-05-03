@@ -138,18 +138,16 @@ void coop_npc_behavior(struct MarioState * m) {
     Vec3f diff;
     vec3_diff(diff, gMarioState->pos, m->pos);
     f32 distSquared = sqr(diff[0]) + sqr(diff[1]) + sqr(diff[2]);
-    print_text_fmt_int(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(91), 185, "%d", distSquared);
+    print_text_fmt_int(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(91), 185, "%d", m->forwardVel >= 10);
     m->input |= INPUT_NONZERO_ANALOG; // Allows him to move
-    // Always holding
+    m->intendedMag = 28.0f; 
+
     m->intendedYaw = obj_angle_to_object(m->marioObj,gMarioObject);
-    //m->faceAngle[1] = m->intendedYaw; 
-    if (distSquared < sqr(3000.0f) && distSquared > sqr(600.0f)) {
-        m->intendedMag = 16.0f; 
-        m->faceAngle[1] = m->intendedYaw; 
+    m->faceAngle[1] = m->intendedYaw; 
+    if (distSquared < sqr(5000.0f) && distSquared > sqr(2000.0f)) {
         coop_npc_action_function(m, (INPUT_Z_DOWN|INPUT_Z_PRESSED), (INPUT_A_DOWN|INPUT_A_PRESSED), 10);
-    } else {
-        m->intendedMag = 32.0f; 
-        m->faceAngle[1] = m->intendedYaw; 
+    } else if (distSquared < sqr(2000.0f) && distSquared > sqr(1000.0f)) {
+        coop_npc_action_function(m, (INPUT_B_DOWN|INPUT_B_PRESSED), (INPUT_B_DOWN|INPUT_B_PRESSED), 40);
     }
 }
 
