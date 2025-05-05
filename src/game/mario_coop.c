@@ -120,16 +120,20 @@ int coop_delete_mario(struct MarioState * m) {
 
     return TRUE;
 }
-void coop_npc_action_function(struct MarioState * m, u16 button_one, u16 button_two, u8 timer_amount) {
+void coop_npc_action_function(struct MarioState * m, u16 button_one, u16 button_two, u8 timer_amount, u8 VelRequire) {
     m->B_ButtonTimer++;
-    m->input |= button_one;
-    if (m->B_ButtonTimer >= timer_amount && m->forwardVel >= 10) {
-        m->input |= button_two;
-        m->B_ButtonTimer = 0;
-    } 
-
-
+    if(m->forwardVel >= VelRequire) {
+        m->input |= button_one;
+        if (m->B_ButtonTimer >= timer_amount) {
+            m->input |= button_one;
+            m->input |= button_two;
+            m->B_ButtonTimer = 0;
+        } 
+    }
 }
+
+
+
 
 
 
@@ -138,16 +142,16 @@ void coop_npc_behavior(struct MarioState * m) {
     Vec3f diff;
     vec3_diff(diff, gMarioState->pos, m->pos);
     f32 distSquared = sqr(diff[0]) + sqr(diff[1]) + sqr(diff[2]);
-    print_text_fmt_int(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(91), 185, "%d", m->forwardVel >= 10);
+    print_text_fmt_int(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(91), 185, "%d", gMarioState->action != ACT_GROUND_BONK);
     m->input |= INPUT_NONZERO_ANALOG; // Allows him to move
-    m->intendedMag = 28.0f; 
+    m->intendedMag = 32.0f; 
 
     m->intendedYaw = obj_angle_to_object(m->marioObj,gMarioObject);
     m->faceAngle[1] = m->intendedYaw; 
     if (distSquared < sqr(5000.0f) && distSquared > sqr(2000.0f)) {
-        coop_npc_action_function(m, (INPUT_Z_DOWN|INPUT_Z_PRESSED), (INPUT_A_DOWN|INPUT_A_PRESSED), 10);
+        coop_npc_action_function(m, INPUT_Z_PRESSED, (INPUT_A_DOWN|INPUT_A_PRESSED), 10,10);
     } else if (distSquared < sqr(2000.0f) && distSquared > sqr(1000.0f)) {
-        coop_npc_action_function(m, (INPUT_B_DOWN|INPUT_B_PRESSED), (INPUT_B_DOWN|INPUT_B_PRESSED), 40);
+        coop_npc_action_function(m, (INPUT_B_DOWN|INPUT_B_PRESSED), (INPUT_B_DOWN|INPUT_B_PRESSED), 40, 30);
     }
 }
 
@@ -177,9 +181,13 @@ void coop_mario_collision(struct MarioState * m) {
             switch (gMarioStates[i].controlMode) {
                 case COOP_CM_NPC:
                 if (m->controlMode != COOP_CM_NPC) {
-                    if (gMarioStates[i].action != ACT_DEATH_ON_BACK && gMarioStates[i].wall == NULL){
-                        //set_mario_action(m,ACT_GROUND_BONK, 0);
-                        set_mario_action(m,ACT_DEATH_ON_BACK, 0);
+                    if (gMarioStates[i].action != ACT_GROUND_BONK ) {
+                        if (gMarioStates[i].wall == NULL){
+                            //set_mario_action(m,ACT_GROUND_BONK, 0);
+                            //gMarioState->health -=  272;
+                            set_mario_action(gMarioState,ACT_GROUND_BONK, 0);
+                        }
+    
                     }
 
                     /**if (gMarioStates[i].action == ACT_JUMP_KICK) {

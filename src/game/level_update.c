@@ -380,10 +380,19 @@ void init_mario_after_warp(void) {
         }
 
         init_mario(gMarioState);
+        //Vec3f MarioIntitPos;
+        //MarioIntitPos[0] = gMarioState->pos[0];
+        //MarioIntitPos[1] = gMarioState->pos[1];
+        //MarioIntitPos[2] = gMarioState->pos[2];
+        //coop_spawn_mario(MarioIntitPos, COOP_CM_NPC);
         set_mario_initial_action(gMarioState, marioSpawnType, sWarpDest.arg);
+        //set_mario_initial_action(&gMarioStates[1], marioSpawnType, sWarpDest.arg);
 
         gMarioState->interactObj = object;
+        //gMarioStates[1].interactObj = object;
         gMarioState->usedObj = object;
+        //gMarioStates[1].usedObj = object;
+
     }
 
     reset_camera(gCurrentArea->camera);

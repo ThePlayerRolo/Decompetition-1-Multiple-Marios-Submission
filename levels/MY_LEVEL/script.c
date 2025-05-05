@@ -38,7 +38,7 @@ const LevelScript level_MY_LEVEL_entry[] = {
 	AREA(1, MY_LEVEL_area_1),
 		WARP_NODE(0xF1, LEVEL_MY_HUB, 0x01, 0x0B, WARP_NO_CHECKPOINT),
 		WARP_NODE(0x0A, LEVEL_MY_LEVEL, 0x01, 0x0A, WARP_NO_CHECKPOINT),
-		MARIO_POS(0x01, 0, 0, 80, 0),
+		MARIO_POS(0x01, 0, 0, 0, 0),
 		OBJECT(MODEL_NONE, 1190, 80, 0, 0, 0, 0, (COOP_CM_TAKE_TURNS << 16), bhvSpawnCoopMario),
 		OBJECT(MODEL_NONE, 733, 80, 0, 0, 0, 0, (COOP_CM_TAKE_TURNS << 16), bhvSpawnCoopMario),
 		OBJECT(MODEL_NONE, 1190, 80, 5528, 0, 0, 0, (COOP_CM_NPC << 16), bhvSpawnCoopMario),
@@ -54,7 +54,7 @@ const LevelScript level_MY_LEVEL_entry[] = {
 		/* Fast64 end persistent block [area commands] */
 	END_AREA(),
 	FREE_LEVEL_POOL(),
-	MARIO_POS(0x01, 0, 0, 80, 0),
+	MARIO_POS(0x01, 0, 0, 0, 0),
 	CALL(0, lvl_init_or_update),
 	CALL_LOOP(1, lvl_init_or_update),
 	CLEAR_LEVEL(),
