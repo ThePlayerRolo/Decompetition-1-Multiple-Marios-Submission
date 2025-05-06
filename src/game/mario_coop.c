@@ -145,7 +145,6 @@ void coop_npc_behavior(struct MarioState * m) {
     f32 distSquared = sqr(diff[0]) + sqr(diff[1]) + sqr(diff[2]);
     m->input |= INPUT_NONZERO_ANALOG;
     m->intendedMag = 32.0f; 
-
     m->intendedYaw = obj_angle_to_object(m->marioObj,gMarioObject);
     m->faceAngle[1] = m->intendedYaw; 
     if (distSquared < sqr(3000.0f) && distSquared > sqr(1000.0f)) {
@@ -182,10 +181,10 @@ void coop_mario_collision(struct MarioState * m) {
             switch (gMarioStates[i].controlMode) {
                 case COOP_CM_NPC:
                 if (m->controlMode != COOP_CM_NPC) {
-                    if (gMarioStates[i].action != ACT_GROUND_BONK ) {
+                    if (gMarioState->action != ACT_GROUND_BONK ) {
                         if (gMarioStates[i].wall == NULL){
                             //set_mario_action(m,ACT_GROUND_BONK, 0);
-                            //gMarioState->health -=  272;
+                            gMarioState->health -=  272;
                             set_mario_action(gMarioState,ACT_GROUND_BONK, 0);
                         }
     
