@@ -183,16 +183,11 @@ void coop_mario_collision(struct MarioState * m) {
                 if (m->controlMode != COOP_CM_NPC) {
                     if (gMarioState->action != ACT_GROUND_BONK ) {
                         if (gMarioStates[i].wall == NULL){
-                            //set_mario_action(m,ACT_GROUND_BONK, 0);
                             gMarioState->health -=  272;
                             set_mario_action(gMarioState,ACT_GROUND_BONK, 0);
                         }
     
                     }
-
-                    /**if (gMarioStates[i].action == ACT_JUMP_KICK) {
-                        set_mario_action(m,ACT_GROUND_BONK, 0);
-                    } */
                 } else {
                     vec3f_normalize(diff);
                     vec3_scale_dest(diff,diff,-pressure);
