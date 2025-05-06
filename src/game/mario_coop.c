@@ -166,6 +166,25 @@ void coop_reset_state(void) {
         gMarioStates[i].isDead = FALSE;
     }
 }
+// Used to caculate distances for the bottom code.
+void coop_mario_collision_distance(Vec3f diff, f32 distSquared, f32 pressure, Vec3f pos,  struct MarioState * m) {
+    vec3f_normalize(diff);
+    vec3_scale_dest(diff,diff,-pressure);
+
+    vec3f_sum(m->pos,m->pos,diff);
+    vec3_scale_dest(diff,diff,-1.0f);
+    vec3f_sum(pos,pos,diff);
+}
+
+// NPC Collision Check
+void coop_mario_collision_npc(struct MarioState * m, struct Surface * wall) {
+    if (gMarioState->action != ACT_GROUND_BONK) {
+        if (wall == NULL) {
+            gMarioState->health -=  272;
+            set_mario_action(gMarioState,ACT_GROUND_BONK, 0);
+        }
+    }
+}
 
 // Don't call this function yourself, used for Mario touching other Marios O////O 
 void coop_mario_collision(struct MarioState * m) {
@@ -180,32 +199,19 @@ void coop_mario_collision(struct MarioState * m) {
         if (distSquared < sqr(COOP_MARIO_HITBOX_SIZE)) {
             switch (gMarioStates[i].controlMode) {
                 case COOP_CM_NPC:
-                if (m->controlMode != COOP_CM_NPC) {
-                    if (gMarioState->action != ACT_GROUND_BONK ) {
-                        if (gMarioStates[i].wall == NULL){
-                            gMarioState->health -=  272;
-                            set_mario_action(gMarioState,ACT_GROUND_BONK, 0);
-                        }
-    
+                    if (m == gMarioState) {
+                        coop_mario_collision_npc(m, gMarioStates[i].wall);
                     }
-                } else {
-                    vec3f_normalize(diff);
-                    vec3_scale_dest(diff,diff,-pressure);
-
-                    vec3f_sum(m->pos,m->pos,diff);
-                    vec3_scale_dest(diff,diff,-1.0f);
-                    vec3f_sum(gMarioStates[i].pos,gMarioStates[i].pos,diff);
-                }
-                break;
+                    coop_mario_collision_distance(diff, distSquared, pressure, gMarioStates[i].pos, m);
+                    break;
                 case COOP_CM_TAKE_TURNS:
+                    if (m->controlMode == COOP_CM_NPC) {
+                        coop_mario_collision_npc(m, gMarioStates[i].wall);
+                    }
+                    coop_mario_collision_distance(diff, distSquared, pressure, gMarioStates[i].pos, m);
+                    break;
                 case COOP_CM_ALL_ACTIVE:
-
-                    vec3f_normalize(diff);
-                    vec3_scale_dest(diff,diff,-pressure);
-
-                    vec3f_sum(m->pos,m->pos,diff);
-                    vec3_scale_dest(diff,diff,-1.0f);
-                    vec3f_sum(gMarioStates[i].pos,gMarioStates[i].pos,diff);
+                    coop_mario_collision_distance(diff, distSquared, pressure, gMarioStates[i].pos, m);
                     break;
         } 
         }   
