@@ -151,7 +151,7 @@ void coop_npc_behavior(struct MarioState * m) {
     if (distSquared < sqr(3000.0f) && distSquared > sqr(1000.0f)) {
         coop_npc_action_function(m, INPUT_Z_PRESSED, (INPUT_A_DOWN|INPUT_A_PRESSED), 10,10);
     } else if (distSquared < sqr(1000.0f) && distSquared > sqr(500.0f)) {
-        coop_npc_action_function(m, (INPUT_B_DOWN|INPUT_B_PRESSED), (INPUT_B_DOWN|INPUT_B_PRESSED), 40, 30);
+        coop_npc_action_function(m, (INPUT_B_DOWN|INPUT_B_PRESSED), (INPUT_B_DOWN|INPUT_B_PRESSED), 40, 10);
     }
 }
 
