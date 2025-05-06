@@ -31,6 +31,8 @@ int gCoopActiveMarios = 1;
 int gCoopActiveControllableMarios = 1;
 int gCoopActiveMarioIndex = 0;
 
+
+
 /* 
 Spawns a Mario at the specified position with a specific player ID.
 Returns the MarioState of the spawned Mario, NULL if the ID is already used.
@@ -121,15 +123,15 @@ int coop_delete_mario(struct MarioState * m) {
     return TRUE;
 }
 void coop_npc_action_function(struct MarioState * m, u16 button_one, u16 button_two, u8 timer_amount, u8 VelRequire) {
-    m->B_ButtonTimer++;
     if(m->forwardVel >= VelRequire) {
-        m->input |= button_one;
-        if (m->B_ButtonTimer >= timer_amount) {
             m->input |= button_one;
-            m->input |= button_two;
-            m->B_ButtonTimer = 0;
-        } 
+            m->B_ButtonTimer++;
+            if (m->B_ButtonTimer >= timer_amount) {
+                m->input |= button_two;
+                m->B_ButtonTimer = 0;
+        }
     }
+
 }
 
 
@@ -138,22 +140,21 @@ void coop_npc_action_function(struct MarioState * m, u16 button_one, u16 button_
 
 
 void coop_npc_behavior(struct MarioState * m) {
-    // Sample NPC function that makes Mario jump around like an idiot.
     Vec3f diff;
     vec3_diff(diff, gMarioState->pos, m->pos);
     f32 distSquared = sqr(diff[0]) + sqr(diff[1]) + sqr(diff[2]);
-    print_text_fmt_int(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(91), 185, "%d", gMarioState->action != ACT_GROUND_BONK);
-    m->input |= INPUT_NONZERO_ANALOG; // Allows him to move
+    m->input |= INPUT_NONZERO_ANALOG;
     m->intendedMag = 32.0f; 
 
     m->intendedYaw = obj_angle_to_object(m->marioObj,gMarioObject);
     m->faceAngle[1] = m->intendedYaw; 
-    if (distSquared < sqr(5000.0f) && distSquared > sqr(2000.0f)) {
+    if (distSquared < sqr(3000.0f) && distSquared > sqr(1000.0f)) {
         coop_npc_action_function(m, INPUT_Z_PRESSED, (INPUT_A_DOWN|INPUT_A_PRESSED), 10,10);
-    } else if (distSquared < sqr(2000.0f) && distSquared > sqr(1000.0f)) {
+    } else if (distSquared < sqr(1000.0f) && distSquared > sqr(500.0f)) {
         coop_npc_action_function(m, (INPUT_B_DOWN|INPUT_B_PRESSED), (INPUT_B_DOWN|INPUT_B_PRESSED), 40, 30);
     }
 }
+
 
 // Don't call this function yourself, used for level transitions
 void coop_reset_state(void) {

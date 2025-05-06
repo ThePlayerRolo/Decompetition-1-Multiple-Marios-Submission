@@ -1289,6 +1289,12 @@ s32 init_level(void) {
         if (gPlayerSpawnInfos[0].areaIndex >= 0) {
             load_mario_area();
             init_mario(gMarioState);
+            //Vec3f MarioIntitPos;
+            //MarioIntitPos[0] = gMarioState->pos[0];
+            //MarioIntitPos[1] = gMarioState->pos[1];
+            //MarioIntitPos[2] = gMarioState->pos[2];
+            //coop_spawn_mario(MarioIntitPos, COOP_CM_LUIGI);
+
         }
 
         if (gCurrentArea != NULL) {
