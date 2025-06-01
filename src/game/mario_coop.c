@@ -42,7 +42,7 @@ struct MarioState * coop_spawn_mario_with_id(Vec3f pos, int marioID, int control
 
     gCoopActiveMarios++;
     if (IS_CONTROLLABLE(control_mode)) {
-        gCoopActiveControllableMarios --;
+        gCoopActiveControllableMarios ++;
     }
 
     init_mario_from_save_file(&gMarioStates[marioID],marioID);
@@ -54,7 +54,6 @@ struct MarioState * coop_spawn_mario_with_id(Vec3f pos, int marioID, int control
     vec3f_copy(gMarioStates[marioID].pos, pos);
     return &gMarioStates[marioID];
 }
-
 /*
 Spawns a Mario at the specified position using any empty ID.
 Returns the MarioState of the spawned Mario, NULL if Mario count is maxed out.
@@ -84,9 +83,7 @@ void coop_give_control_to_next(void) {
     gMarioState=&gMarioStates[gCoopActiveMarioIndex];
     gMarioObject=gMarioStates[gCoopActiveMarioIndex].marioObj;
 
-    #ifdef COOP_SNAPPY_SWAP_CAMERA
-        reset_camera(gCurrentArea->camera);
-    #endif
+
 }
 
 
@@ -107,21 +104,15 @@ int coop_delete_mario(struct MarioState * m) {
     if (gCoopActiveMarios == 0) {
         return FALSE; // Returns FALSE (Game Over) when every Mario is dead.
     }
-    #ifdef COOP_MAIN_MARIO_MUST_LIVE
     if (m==gMarioState) {
         m->isDead = TRUE;
         return FALSE; // Returns FALSE (Game Over) when primary Mario has died.
     }
-    #else 
-    if (m == gMarioState) {
-        m->isDead = TRUE;
-        coop_give_control_to_next();
-        reset_camera(gCurrentArea->camera);
-    }
-    #endif
 
     return TRUE;
 }
+
+//Handles Actions For NPCS
 void coop_npc_action_function(struct MarioState * m, u16 button_one, u16 button_two, u8 timer_amount, u8 VelRequire) {
     if(m->forwardVel >= VelRequire) {
             m->input |= button_one;
@@ -133,31 +124,43 @@ void coop_npc_action_function(struct MarioState * m, u16 button_one, u16 button_
     }
 
 }
-
-
-
-
-
-
-void coop_npc_behavior(struct MarioState * m) {
+//NPC BHV
+void coop_npc_behavior(struct MarioState *m) {
+    //Get Diff to Compare Later
     Vec3f diff;
     vec3_diff(diff, gMarioState->pos, m->pos);
     f32 distSquared = sqr(diff[0]) + sqr(diff[1]) + sqr(diff[2]);
-    m->input |= INPUT_NONZERO_ANALOG;
-    m->intendedMag = 32.0f; 
-    if (gMarioState->action != ACT_GROUND_BONK) {
-        m->intendedYaw = obj_angle_to_object(m->marioObj,gMarioObject);
+    int req_dist;
+    if (m->playerID == 24 ) {
+        req_dist = sqr(500.0f);
     } else {
-        m->intendedYaw = 0x000;
+        req_dist = sqr(3500.0f);
     }
-    m->faceAngle[1] = m->intendedYaw; 
-    if (distSquared < sqr(3000.0f) && distSquared > sqr(1000.0f)) {
-        coop_npc_action_function(m, INPUT_Z_PRESSED, (INPUT_A_DOWN|INPUT_A_PRESSED), 10,10);
-    } else if (distSquared < sqr(1000.0f) && distSquared > sqr(500.0f)) {
-        coop_npc_action_function(m, (INPUT_B_DOWN|INPUT_B_PRESSED), (INPUT_B_DOWN|INPUT_B_PRESSED), 40, 10);
+
+    // Check if diff is close enough to ensure we are in range
+    if (distSquared < req_dist) {
+        //Since we are in range, implement range.
+        m->input |= INPUT_NONZERO_ANALOG;
+        m->intendedMag = 32.0f;
+        // Check if mario isn't in a damage or other INVULNERABLE state, and if he isn't move toward him
+        if (!(gMarioState->action & ACT_FLAG_INVULNERABLE)) {
+            m->intendedYaw = obj_angle_to_object(m->marioObj, gMarioObject);
+        } else {
+            m->intendedYaw = 0x000;
+        }
+        m->faceAngle[1] = m->intendedYaw;
+        //Check if we are range for a specific action, if so do it
+        if (distSquared < sqr(3000.0f) && distSquared > sqr(1000.0f)) {
+            coop_npc_action_function(m, INPUT_Z_PRESSED, (INPUT_A_DOWN | INPUT_A_PRESSED), 10, 10);
+        } else if (distSquared < sqr(1000.0f) && distSquared > sqr(500.0f)) {
+            coop_npc_action_function(m, (INPUT_B_DOWN | INPUT_B_PRESSED), (INPUT_B_DOWN | INPUT_B_PRESSED), 40, 10);
+        }
+        //Check if we are hitting a wall or Ledge Grabbing so we don't get stuck
+        if (m->wall != NULL ||m->action == ACT_LEDGE_GRAB ) {
+                m->input |= (INPUT_A_DOWN | INPUT_A_PRESSED);
+        }
     }
 }
-
 
 // Don't call this function yourself, used for level transitions
 void coop_reset_state(void) {
@@ -188,26 +191,12 @@ void coop_mario_collision(struct MarioState *m) {
         if (&gMarioStates[i] == m || &gMarioStates[i].marioObj == NULL) {
             continue;
         }
-
         Vec3f diff;
         vec3_diff(diff, gMarioStates[i].pos, m->pos);
         f32 distSquared = sqr(diff[0]) + sqr(diff[1]) + sqr(diff[2]);
         f32 pressure = sqrtf(sqr(COOP_MARIO_HITBOX_SIZE) - distSquared) / 4.f;
         if (distSquared < sqr(COOP_MARIO_HITBOX_SIZE)) {
             switch (gMarioStates[i].controlMode) {
-                case COOP_CM_NPC:
-                    if (m == gMarioState) {
-                        if (gMarioState->action != ACT_GROUND_BONK) {
-                            coop_mario_collision_distance(diff,pressure,gMarioState->pos,m, -1.0f);
-                            if (gMarioStates[i].wall == NULL) {
-                                if (gMarioState->health != 0) {
-                                    gMarioState->health -= 272;
-                                    set_mario_action(gMarioState, ACT_GROUND_BONK, 0);
-                                }
-                            }
-                        }
-                    }
-                    break;
                 case COOP_CM_TAKE_TURNS:
                 if (m->controlMode == COOP_CM_NPC) {
                     if (gMarioState->action != ACT_GROUND_BONK) {
@@ -225,12 +214,8 @@ void coop_mario_collision(struct MarioState *m) {
                 }
                 break;
                 case COOP_CM_ALL_ACTIVE:
-                    vec3f_normalize(diff);
-                    vec3_scale_dest(diff, diff, -pressure);
-
-                    vec3f_sum(m->pos, m->pos, diff);
-                    vec3_scale_dest(diff, diff, -1.0f);
-                    vec3f_sum(gMarioStates[i].pos, gMarioStates[i].pos, diff);
+                case COOP_CM_NPC:
+                    coop_mario_collision_distance(diff,pressure,gMarioStates[i].pos,m, -1.0f);
                     break;
             }
         }

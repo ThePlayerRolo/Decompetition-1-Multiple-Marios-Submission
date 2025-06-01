@@ -6081,6 +6081,14 @@ const BehaviorScript bhvSpawnCoopMario[] = {
     BEGIN_LOOP(),
     END_LOOP(),
 };
+const BehaviorScript bhvSpawnCoopNPC[] = {
+    BEGIN(OBJ_LIST_DEFAULT),
+    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    CALL_NATIVE(bhv_coop_spawn_npc_init),
+    BEGIN_LOOP(),
+    CALL_NATIVE(bhv_coop_spawn_npc_loop),
+    END_LOOP(),
+};
 
 const BehaviorScript bhvWeightPlate[] = {
     BEGIN(OBJ_LIST_SURFACE),

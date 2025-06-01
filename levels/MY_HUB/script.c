@@ -34,6 +34,7 @@ const LevelScript level_MY_HUB_entry[] = {
 		WARP_NODE(0xF1, LEVEL_CASTLE, 0x01, 0x64, WARP_NO_CHECKPOINT),
 		MARIO_POS(0x01, 0, 0, 1137, 0),
 		OBJECT(MODEL_NONE, 0, 1233, 0, 0, 0, 0, (0x0B << 16), bhvAirborneDeathWarp),
+		OBJECT(MODEL_NONE, 0, 1179, 0, 0, 0, 0, (0x0C << 16), bhvAirborneStarCollectWarp),
 		OBJECT(MODEL_WARP_PIPE, 0, 1124, 866, 0, 0, 0, (0x0A << 16), bhvWarpPipe),
 		TERRAIN(MY_HUB_area_1_collision),
 		MACRO_OBJECTS(MY_HUB_area_1_macro_objs),

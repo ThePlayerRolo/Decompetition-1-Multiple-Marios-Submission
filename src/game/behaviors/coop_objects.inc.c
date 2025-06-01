@@ -3,6 +3,19 @@ void bhv_coop_spawn_mario(void) {
     coop_spawn_mario(&o->oPosVec,o->oBehParams2ndByte);
 }
 
+
+//Behavior: bhvSpawnCoopNPC
+void bhv_coop_spawn_npc_loop(void) {
+    int32_t id = o->oBehParams2ndByte;
+    coop_spawn_mario_with_id(&o->oPosVec,id, COOP_CM_NPC);
+
+}
+void bhv_coop_spawn_npc_init(void) {
+        coop_spawn_mario_with_id(&o->oPosVec,o->oBehParams2ndByte, COOP_CM_NPC);
+
+}
+
+
 struct ObjectHitbox sDoubleCherryHitbox = {
     /* interactType:      */ INTERACT_COIN,
     /* downOffset:        */ 0,

@@ -4,7 +4,6 @@ const GeoLayout MY_LEVEL_area_1_geo[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
 		GEO_DISPLAY_LIST(LAYER_OPAQUE, MY_LEVEL_dl_Level_Mesh_mesh_layer_1),
-		GEO_TRANSLATE_NODE_WITH_DL(LAYER_TRANSPARENT, 0, -3149, 2003, MY_LEVEL_dl_Plane_mesh_layer_5),
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };

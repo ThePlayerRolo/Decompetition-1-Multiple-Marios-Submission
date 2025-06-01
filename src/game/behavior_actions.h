@@ -551,6 +551,8 @@ void bhv_dust_smoke_loop(void);
 void bhv_yoshi_loop(void);
 void bhv_volcano_trap_loop(void);
 void bhv_coop_spawn_mario(void);
+void bhv_coop_spawn_npc_loop(void);
+void bhv_coop_spawn_npc_init(void);
 void bhv_coop_weight_plate(void);
 void bhv_coop_raise_platform(void);
 void bhv_coop_double_cherry(void);
